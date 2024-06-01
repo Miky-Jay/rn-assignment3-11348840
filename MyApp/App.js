@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TextInput, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Ensure @expo/vector-icons is installed
 
+// Import images
+const studyIcon = require('./assets/study.png');
+const codeIcon = require('./assets/code.png');
+const cookIcon = require('./assets/cook.png');
+const readIcon = require('./assets/read.png');
+const writeIcon = require('./assets/write.png');
+const meditateIcon = require('./assets/meditate.png');
+const shopIcon = require('./assets/shop.png');
+
 const categories = [
-  'Exercise', 'Study', 'Code', 'Cook', 'Read', 'Write', 'Meditate', 'Shop'
+  { name: 'Study', icon: studyIcon },
+  { name: 'Code', icon: codeIcon },
+  { name: 'Cook', icon: cookIcon },
+  { name: 'Read', icon: readIcon },
+  { name: 'Write', icon: writeIcon },
+  { name: 'Meditate', icon: meditateIcon },
+  { name: 'Shop', icon: shopIcon }
 ];
 
 const tasks = [
@@ -48,10 +63,20 @@ const App = () => {
     </View>
   );
 
+  const renderCategory = ({ item }) => (
+    <View style={styles.category}>
+      <Image source={item.icon} style={styles.categoryIcon} />
+      <Text style={styles.categoryText}>{item.name}</Text>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.welcomeText}>Hello, Devs</Text>
+        <View>
+          <Text style={styles.welcomeText}>Hello, Devs</Text>
+          <Text style={styles.smallText}>15 tasks today</Text>
+        </View>
         <Image source={{ uri: 'https://emojipedia-us.s3.amazonaws.com/source/skype/289/woman_1f469.png' }} style={styles.profilePic} />
       </View>
       <CustomTextInput
@@ -60,14 +85,14 @@ const App = () => {
         placeholder="Search tasks..."
       />
       <Text style={styles.title}>Categories</Text>
-      <ScrollView horizontal style={styles.categoriesContainer}>
-        {categories.map((category, index) => (
-          <View key={index} style={styles.category}>
-            <Text style={styles.categoryText}>{category}</Text>
-          </View>
-        ))}
-      </ScrollView>
-      <Text style={styles.title}>Ongoing Tasks</Text>
+      <FlatList
+        horizontal
+        data={categories}
+        renderItem={renderCategory}
+        keyExtractor={(item) => item.name}
+        style={styles.categoriesContainer}
+      />
+      <Text style={[styles.title, { marginTop: 0 }]}>Ongoing Tasks</Text>
       <ScrollView style={styles.tasksContainer}>
         {tasks.map((task) => (
           <TaskItem key={task.id} title={task.title} />
@@ -92,6 +117,10 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 24, // Make it a bit bigger
     fontWeight: 'bold',
+  },
+  smallText: {
+    fontSize: 12, // Smaller text size for the task count
+    color: '#666',
   },
   profilePic: {
     width: 50,
@@ -125,24 +154,34 @@ const styles = StyleSheet.create({
   },
   categoriesContainer: {
     flexDirection: 'row',
-    marginBottom: 20,
+    marginBottom: 10, 
   },
   category: {
     backgroundColor: '#e0e0e0',
     borderRadius: 20,
     padding: 10,
-    marginRight: 10,
+    marginRight: 20,
+    alignItems: 'center',
+    width: 250, // Adjust width
+    height: 400, // Adjust height
+    justifyContent: 'center',
+  },
+  categoryIcon: {
+    width: 250,
+    height: 350,
+    marginBottom: 5,
   },
   categoryText: {
-    fontSize: 16,
+    fontSize: 12,
+    textAlign: 'center',
   },
   tasksContainer: {
     flex: 1,
   },
   taskItem: {
-    padding: 55,
+    padding: 20,
     backgroundColor: '#ffffff',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#ddd',
     borderRadius: 10,
     marginBottom: 10,
@@ -153,15 +192,4 @@ const styles = StyleSheet.create({
 });
 
 export default App;
-
-
-
-
-
-
-
-
-
-
-
 
